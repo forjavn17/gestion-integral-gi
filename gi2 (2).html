@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>GESTIÓN INTEGRAL G&I</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#0a1f5c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="G&I Trámites">
+<link rel="apple-touch-icon" href="/icons/icon-192.png">
+<link rel="icon" type="image/png" href="/icons/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --dark: #0a1f5c;
+  --mid: #1a6fc4;
+  --light: #4aaee8;
+  --sky: #e8f4fd;
+  --white: #ffffff;
+  --gray: #f4f7fb;
+  --text: #1a2744;
+  --sub: #6b7fa3;
+  --success: #22c55e;
+  --warn: #f59e0b;
+  --radius: 20px;
+  --shadow: 0 8px 32px rgba(10,31,92,0.13);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: #dde8f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* ── PHONE SHELL ── */
+.phone {
+  width: 390px;
+  height: 844px;
+  background: var(--white);
+  border-radius: 50px;
+  box-shadow: 0 30px 80px rgba(10,31,92,0.3), inset 0 0 0 2px rgba(255,255,255,0.5);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Status bar */
+.status-bar {
+  background: var(--dark);
+  padding: 12px 24px 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+.status-bar .time { color: white; font-weight: 800; font-size: 15px; }
+.status-bar .icons { color: white; font-size: 12px; display:flex; gap:4px; align-items:center; }
+
+/* ── SCREENS ── */
+.screen {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fadeIn 0.3s ease;
+}
+.screen.active { display: flex; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ── SCROLLABLE BODY ── */
+.scroll-body {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 20px;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll-body::-webkit-scrollbar { display: none; }
+
+/* ══════════════════════════════
+   SCREEN 1 – ONBOARDING
+══════════════════════════════ */
+#s-onboarding {
+  background: linear-gradient(160deg, var(--dark) 0%, #0e3580 50%, var(--mid) 100%);
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  padding: 60px 32px 50px;
+  position: relative;
+  overflow: hidden;
+}
+#s-onboarding::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 260px; height: 260px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+#s-onboarding::after {
+  content: '';
+  position: absolute;
+  bottom: 60px; left: -60px;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+}
+.onb-logo {
+  position: relative; z-index:1;
+}
+.onb-badge {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 50px;
+  padding: 6px 18px;
+  color: #a8d4f5;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.onb-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 38px;
+  font-weight: 900;
+  color: white;
+  line-height: 1.05;
+  margin-bottom: 4px;
+}
+.onb-title span { color: var(--light); }
+.onb-tagline {
+  color: rgba(255,255,255,0.7);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.6;
+  margin-top: 16px;
+  max-width: 260px;
+  margin-left: auto; margin-right: auto;
+}
+
+.onb-illustration {
+  position: relative; z-index:1;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+.onb-card {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 16px;
+  padding: 14px 16px;
+  text-align: center;
+  backdrop-filter: blur(8px);
+  width: 90px;
+}
+.onb-card .ico { font-size: 24px; margin-bottom: 6px; }
+.onb-card .lbl { color: white; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.onb-bottom { position: relative; z-index:1; width: 100%; }
+.onb-dots { display:flex; gap:8px; justify-content:center; margin-bottom:24px; }
+.onb-dots span { width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,0.3); }
+.onb-dots span.active { background:white; width:24px; border-radius:4px; }
+
+/* ── BUTTONS ── */
+.btn-primary {
+  width: 100%;
+  padding: 17px;
+  border-radius: 16px;
+  border: none;
+  background: white;
+  color: var(--dark);
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+.btn-primary:active { transform: scale(0.97); }
+.btn-primary.blue {
+  background: linear-gradient(135deg, var(--mid), var(--light));
+  color: white;
+  box-shadow: 0 8px 24px rgba(26,111,196,0.4);
+}
+.btn-secondary {
+  width: 100%;
+  padding: 15px;
+  border-radius: 16px;
+  border: 2px solid var(--mid);
+  background: transparent;
+  color: var(--mid);
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+/* ══════════════════════════════
+   SCREEN 2 – REGISTRO
+══════════════════════════════ */
+.screen-header {
+  background: linear-gradient(135deg, var(--dark), var(--mid));
+  padding: 24px 24px 28px;
+  flex-shrink: 0;
+}
+.screen-header .back {
+  color: rgba(255,255,255,0.7);
+  font-size: 22px;
+  cursor: pointer;
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 4px 0;
+}
+.screen-header h1 {
+  font-family: 'Montserrat', sans-serif;
+  color: white;
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.screen-header p {
+  color: rgba(255,255,255,0.65);
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.form-body { padding: 24px 20px; }
+.input-group { margin-bottom: 18px; }
+.input-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--sub);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.input-group .inp {
+  width: 100%;
+  padding: 15px 18px;
+  border-radius: 14px;
+  border: 2px solid #e2eaf6;
+  background: var(--gray);
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input-group .inp:focus { border-color: var(--mid); background: white; }
+.inp-icon { position: relative; }
+.inp-icon .inp { padding-left: 46px; }
+.inp-icon .icon {
+  position: absolute; left: 16px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px; pointer-events: none;
+}
+.input-group select.inp { appearance: none; }
+
+.terms {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.terms input[type=checkbox] { width:18px; height:18px; margin-top:2px; accent-color: var(--mid); }
+.terms span { font-size: 12px; color: var(--sub); line-height: 1.5; }
+.terms span a { color: var(--mid); font-weight: 700; }
+
+/* ══════════════════════════════
+   SCREEN 3 – HOME
+══════════════════════════════ */
+.home-header {
+  background: linear-gradient(135deg, var(--dark) 0%, var(--mid) 100%);
+  padding: 20px 22px 30px;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.home-header::after {
+  content: '';
+  position: absolute;
+  bottom: -20px; right: -20px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+}
+.home-header .top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+.home-header .logo-sm {
+  font-family: 'Montserrat', sans-serif;
+  color: white;
+  font-size: 14px;
+  font-weight: 800;
+}
+.home-header .logo-sm span { color: var(--light); }
+.avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: 2px solid rgba(255,255,255,0.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; cursor: pointer;
+}
+.home-header h2 {
+  color: white;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.3;
+  position: relative; z-index:1;
+}
+.home-header h2 span { color: var(--light); }
+
+/* Categories */
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--sub);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 20px 20px 12px;
+}
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  padding: 0 20px;
+}
+.cat-card {
+  background: white;
+  border-radius: 18px;
+  padding: 18px 12px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 2px solid transparent;
+}
+.cat-card:active { transform: scale(0.95); }
+.cat-card.auto  { border-color: #dbeafe; background: #f0f7ff; }
+.cat-card.admin { border-color: #dcfce7; background: #f0fdf4; }
+.cat-card.cont  { border-color: #fef9c3; background: #fefce8; }
+.cat-card .cat-icon { font-size: 28px; margin-bottom: 8px; }
+.cat-card .cat-name {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  line-height: 1.3;
+}
+
+/* Quick access */
+.quick-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 0 20px;
+}
+.quick-card {
+  background: white;
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.quick-card:active { transform: scale(0.97); }
+.quick-card .q-icon {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.quick-card.tramites .q-icon { background: #eff6ff; }
+.quick-card.contacto .q-icon { background: #f0fdf4; }
+.quick-card .q-text strong { display: block; font-size: 13px; font-weight: 800; color: var(--text); }
+.quick-card .q-text span { font-size: 11px; color: var(--sub); }
+
+/* Banner promo */
+.promo-banner {
+  margin: 0 20px;
+  background: linear-gradient(135deg, var(--dark), var(--mid));
+  border-radius: 18px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 8px 24px rgba(26,111,196,0.3);
+}
+.promo-banner .promo-icon { font-size: 32px; }
+.promo-banner .promo-text strong { color: white; font-size: 14px; font-weight: 800; display: block; }
+.promo-banner .promo-text span { color: rgba(255,255,255,0.7); font-size: 12px; }
+
+/* ══════════════════════════════
+   SCREEN 4 – SERVICIOS AUTOMOTOR
+══════════════════════════════ */
+.service-list { padding: 16px 20px; }
+.service-item {
+  background: white;
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 4px 16px rgba(10,31,92,0.07);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.service-item:active { transform: scale(0.98); }
+.service-item .s-icon {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  background: var(--sky);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.service-item .s-info strong { font-size: 15px; font-weight: 800; color: var(--text); }
+.service-item .s-info span { display: block; font-size: 12px; color: var(--sub); margin-top: 2px; }
+.service-item .arrow { margin-left: auto; color: var(--sub); font-size: 18px; }
+
+/* ══════════════════════════════
+   SCREEN 5 – DETALLE TRÁMITE
+══════════════════════════════ */
+.detail-hero {
+  background: linear-gradient(135deg, var(--dark), var(--mid));
+  padding: 20px 22px 36px;
+  position: relative;
+}
+.detail-hero .back { color: rgba(255,255,255,0.8); cursor:pointer; font-size:22px; display:block; margin-bottom:12px; }
+.detail-hero h2 { color: white; font-family: 'Montserrat', sans-serif; font-size: 24px; font-weight: 800; }
+.detail-hero .time-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 50px;
+  padding: 5px 14px;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 10px;
+}
+
+.detail-card {
+  margin: -16px 20px 16px;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+.detail-card h3 { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 10px; display:flex; align-items:center; gap:8px; }
+.detail-card p { font-size: 13px; color: var(--sub); line-height: 1.7; }
+.req-list { list-style: none; margin-top: 4px; }
+.req-list li { font-size: 13px; color: var(--sub); padding: 5px 0; display:flex; align-items:center; gap:8px; }
+.req-list li::before { content:'✓'; color: var(--mid); font-weight: 800; }
+
+.price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--sky);
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin: 0 20px 16px;
+}
+.price-row span { font-size: 13px; color: var(--sub); font-weight: 600; }
+.price-row strong { font-size: 16px; font-weight: 800; color: var(--mid); }
+
+.btn-group { padding: 0 20px 24px; display:flex; flex-direction:column; gap:10px; }
+
+.btn-wsp {
+  width: 100%;
+  padding: 15px;
+  border-radius: 16px;
+  border: none;
+  background: #25D366;
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 6px 20px rgba(37,211,102,0.35);
+  transition: transform 0.15s;
+}
+.btn-wsp:active { transform: scale(0.97); }
+
+/* ══════════════════════════════
+   SCREEN 6 – FORMULARIO SOLICITUD
+══════════════════════════════ */
+.success-banner {
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  border: 2px solid #86efac;
+  border-radius: 14px;
+  padding: 14px 18px;
+  margin: 0 20px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.success-banner span { font-size: 13px; color: #15803d; font-weight: 700; }
+
+/* ══════════════════════════════
+   SCREEN 7 – ESTADO TRÁMITE
+══════════════════════════════ */
+.tramite-card {
+  margin: 16px 20px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.tramite-card .tc-header {
+  background: linear-gradient(135deg, var(--dark), var(--mid));
+  padding: 18px 20px;
+}
+.tramite-card .tc-header h3 { color: white; font-size: 16px; font-weight: 800; }
+.tramite-card .tc-header span { color: rgba(255,255,255,0.65); font-size: 12px; }
+.tramite-card .tc-body { padding: 20px; }
+
+.status-steps { list-style: none; }
+.status-steps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding-bottom: 22px;
+  position: relative;
+}
+.status-steps li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 32px;
+  bottom: 0;
+  width: 2px;
+  background: #e2eaf6;
+}
+.status-steps li.done::after { background: var(--mid); }
+.step-dot {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  z-index: 1;
+}
+.step-dot.done { background: var(--mid); color: white; }
+.step-dot.active { background: var(--warn); color: white; box-shadow: 0 0 0 4px rgba(245,158,11,0.2); }
+.step-dot.pending { background: #e2eaf6; color: var(--sub); }
+.step-info strong { font-size: 14px; font-weight: 800; color: var(--text); }
+.step-info span { display:block; font-size: 12px; color: var(--sub); margin-top: 2px; }
+
+/* ══════════════════════════════
+   SCREEN 8 – CONTACTO
+══════════════════════════════ */
+.contact-card {
+  margin: 16px 20px;
+  background: white;
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.contact-item-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f4fb;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.contact-item-row:last-child { border-bottom: none; }
+.contact-item-row:active { background: var(--gray); }
+.ci-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: var(--sky);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.ci-info strong { font-size: 14px; font-weight: 800; color: var(--text); display:block; }
+.ci-info span { font-size: 12px; color: var(--sub); }
+.ci-arrow { margin-left: auto; color: var(--sub); }
+
+.wsp-big {
+  margin: 0 20px 20px;
+  padding: 18px;
+  border-radius: 18px;
+  border: none;
+  background: linear-gradient(135deg, #1db954, #25D366);
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  width: calc(100% - 40px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 10px 30px rgba(37,211,102,0.4);
+  transition: transform 0.15s;
+}
+.wsp-big:active { transform: scale(0.97); }
+
+/* ══════════════════════════════
+   BOTTOM NAV
+══════════════════════════════ */
+.bottom-nav {
+  background: white;
+  border-top: 1px solid #edf1f9;
+  display: flex;
+  padding: 10px 0 16px;
+  flex-shrink: 0;
+  box-shadow: 0 -4px 20px rgba(10,31,92,0.07);
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  padding: 4px 0;
+}
+.nav-item:active { transform: scale(0.9); }
+.nav-icon { font-size: 22px; color: var(--sub); }
+.nav-label { font-size: 10px; font-weight: 700; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; }
+.nav-item.active .nav-icon,
+.nav-item.active .nav-label { color: var(--mid); }
+.nav-item.active .nav-icon { transform: scale(1.1); }
+
+/* Chip tags */
+.chip { display: inline-block; background: var(--sky); color: var(--mid); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 50px; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <span class="time">9:41</span>
+    <div class="icons"><span>●●●●</span> <span>WiFi</span> <span>🔋</span></div>
+  </div>
+
+  <!-- ══ SCREEN 1: ONBOARDING ══ -->
+  <div id="s-onboarding" class="screen active" style="display:flex;">
+    <div class="onb-logo">
+      <div class="onb-badge">App Oficial</div>
+      <div class="onb-title">GESTIÓN<br>INTEGRAL <span>G&I</span></div>
+      <p class="onb-tagline">Simplificamos tus trámites.<br><strong style="color:white">Vos enfocate en crecer.</strong></p>
+    </div>
+
+    <div class="onb-illustration">
+      <div class="onb-card"><div class="ico">🚗</div><div class="lbl">Automotor</div></div>
+      <div class="onb-card"><div class="ico">📋</div><div class="lbl">Admin</div></div>
+      <div class="onb-card"><div class="ico">📊</div><div class="lbl">Contable</div></div>
+    </div>
+
+    <div class="onb-bottom">
+      <div class="onb-dots">
+        <span class="active"></span><span></span><span></span>
+      </div>
+      <button class="btn-primary" onclick="showScreen('s-registro')">Empezar →</button>
+      <div style="text-align:center;margin-top:14px;">
+        <span style="color:rgba(255,255,255,0.5);font-size:13px;cursor:pointer" onclick="showScreen('s-home')">Ya tengo cuenta</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 2: REGISTRO ══ -->
+  <div id="s-registro" class="screen">
+    <div class="screen-header">
+      <span class="back" onclick="showScreen('s-onboarding')">←</span>
+      <h1>Crear cuenta</h1>
+      <p>Registrate gratis en segundos</p>
+    </div>
+    <div class="scroll-body">
+      <div class="form-body">
+        <div class="input-group">
+          <label>Nombre completo</label>
+          <div class="inp-icon">
+            <span class="icon">👤</span>
+            <input class="inp" type="text" placeholder="Tu nombre y apellido" />
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Teléfono</label>
+          <div class="inp-icon">
+            <span class="icon">📱</span>
+            <input class="inp" type="tel" placeholder="Ej: 2964 612803" />
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Email (opcional)</label>
+          <div class="inp-icon">
+            <span class="icon">✉️</span>
+            <input class="inp" type="email" placeholder="tu@email.com" />
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Ciudad</label>
+          <div class="inp-icon">
+            <span class="icon">📍</span>
+            <select class="inp">
+              <option>Río Grande, TDF</option>
+              <option>Ushuaia, TDF</option>
+              <option>Otra ciudad</option>
+            </select>
+          </div>
+        </div>
+        <div class="terms">
+          <input type="checkbox" checked />
+          <span>Acepto los <a href="#">Términos de uso</a> y la <a href="#">Política de privacidad</a> de Gestión Integral G&I</span>
+        </div>
+        <button class="btn-primary blue" onclick="showScreen('s-home')">Continuar →</button>
+        <div style="text-align:center;margin-top:16px;color:var(--sub);font-size:12px;">
+          🔒 Tus datos están seguros y protegidos
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 3: HOME ══ -->
+  <div id="s-home" class="screen">
+    <div class="home-header">
+      <div class="top-row">
+        <div>
+          <div style="color:rgba(255,255,255,0.6);font-size:12px;font-weight:600;">¡Hola! 👋</div>
+          <div class="logo-sm">GESTIÓN INTEGRAL <span>G&I</span></div>
+        </div>
+        <div class="avatar">😊</div>
+      </div>
+      <h2>¿Qué trámite<br><span>necesitás hoy?</span></h2>
+    </div>
+
+    <div class="scroll-body">
+      <div class="section-title">Categorías</div>
+      <div class="cat-grid">
+        <div class="cat-card auto" onclick="showScreen('s-automotor')">
+          <div class="cat-icon">🚗</div>
+          <div class="cat-name">Automotor</div>
+        </div>
+        <div class="cat-card admin" onclick="showScreen('s-automotor')">
+          <div class="cat-icon">📋</div>
+          <div class="cat-name">Administrativo</div>
+        </div>
+        <div class="cat-card cont" onclick="showScreen('s-automotor')">
+          <div class="cat-icon">📊</div>
+          <div class="cat-name">Contable</div>
+        </div>
+      </div>
+
+      <div class="section-title">Accesos rápidos</div>
+      <div class="quick-row">
+        <div class="quick-card tramites" onclick="showScreen('s-estado')">
+          <div class="q-icon">📁</div>
+          <div class="q-text"><strong>Mis trámites</strong><span>Ver estado</span></div>
+        </div>
+        <div class="quick-card contacto" onclick="showScreen('s-contacto')">
+          <div class="q-icon">💬</div>
+          <div class="q-text"><strong>Contactar</strong><span>Respuesta inmediata</span></div>
+        </div>
+      </div>
+
+      <div style="padding: 4px 20px 16px;">
+        <div class="promo-banner">
+          <div class="promo-icon">⚡</div>
+          <div class="promo-text">
+            <strong>Atención rápida y personalizada</strong>
+            <span>Consultanos hoy • Respuesta inmediata</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Trámites frecuentes</div>
+      <div class="service-list" style="padding-top:0;">
+        <div class="service-item" onclick="showScreen('s-detalle')">
+          <div class="s-icon">📄</div>
+          <div class="s-info"><strong>Transferencia vehicular</strong><span>Automotor • Consultar</span></div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="service-item" onclick="showScreen('s-detalle')">
+          <div class="s-icon">🔍</div>
+          <div class="s-info"><strong>Informe de dominio</strong><span>Automotor • Consultar</span></div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="service-item" onclick="showScreen('s-detalle')">
+          <div class="s-icon">📑</div>
+          <div class="s-info"><strong>Gestión contable</strong><span>Contable • Consultar</span></div>
+          <span class="arrow">›</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <div class="nav-item active"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></div>
+      <div class="nav-item" onclick="showScreen('s-automotor')"><span class="nav-icon">📋</span><span class="nav-label">Trámites</span></div>
+      <div class="nav-item" onclick="showScreen('s-estado')"><span class="nav-icon">📁</span><span class="nav-label">Estado</span></div>
+      <div class="nav-item" onclick="showScreen('s-contacto')"><span class="nav-icon">💬</span><span class="nav-label">Contacto</span></div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 4: SERVICIOS AUTOMOTOR ══ -->
+  <div id="s-automotor" class="screen">
+    <div class="screen-header">
+      <span class="back" onclick="showScreen('s-home')">←</span>
+      <h1>🚗 Automotor</h1>
+      <p>Seleccioná el trámite que necesitás</p>
+    </div>
+    <div class="scroll-body">
+      <div class="service-list">
+        <div class="service-item" onclick="showScreen('s-detalle')">
+          <div class="s-icon">🔄</div>
+          <div class="s-info"><strong>Transferencia</strong><span>Cambio de titularidad • Consultar</span></div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="service-item" onclick="showScreen('s-detalle')">
+          <div class="s-icon">🔍</div>
+          <div class="s-info"><strong>Informe de dominio</strong><span>Historial del vehículo • Consultar</span></div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="service-item" onclick="showScreen('s-detalle')">
+          <div class="s-icon">🪪</div>
+          <div class="s-info"><strong>Cédula verde / azul</strong><span>Documento del auto • Consultar</span></div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="service-item" onclick="showScreen('s-detalle')">
+          <div class="s-icon">🏷️</div>
+          <div class="s-info"><strong>Patentamiento</strong><span>Alta de vehículo nuevo • Consultar</span></div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="service-item" onclick="showScreen('s-detalle')">
+          <div class="s-icon">🚫</div>
+          <div class="s-info"><strong>Levantamiento de prenda</strong><span>Liberación de deuda • Consultar</span></div>
+          <span class="arrow">›</span>
+        </div>
+        <div class="service-item" onclick="showScreen('s-detalle')">
+          <div class="s-icon">📝</div>
+          <div class="s-info"><strong>Denuncia de venta</strong><span>Protección vendedor • Consultar</span></div>
+          <span class="arrow">›</span>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="showScreen('s-home')"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></div>
+      <div class="nav-item active"><span class="nav-icon">📋</span><span class="nav-label">Trámites</span></div>
+      <div class="nav-item" onclick="showScreen('s-estado')"><span class="nav-icon">📁</span><span class="nav-label">Estado</span></div>
+      <div class="nav-item" onclick="showScreen('s-contacto')"><span class="nav-icon">💬</span><span class="nav-label">Contacto</span></div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 5: DETALLE TRÁMITE ══ -->
+  <div id="s-detalle" class="screen">
+    <div class="detail-hero">
+      <span class="back" onclick="showScreen('s-automotor')">←</span>
+      <h2>Transferencia vehicular</h2>
+      <div class="time-badge">⏱ Tiempo estimado: 3 a 5 días hábiles</div>
+    </div>
+
+    <div class="scroll-body">
+      <div class="detail-card" style="margin-top:-16px;">
+        <h3>📝 Descripción</h3>
+        <p>Realizamos el trámite completo de transferencia de titularidad de vehículos, tanto para compradores como vendedores. Gestionamos toda la documentación necesaria ante el Registro del Automotor.</p>
+      </div>
+
+      <div class="detail-card">
+        <h3>✅ Requisitos</h3>
+        <ul class="req-list">
+          <li>DNI de comprador y vendedor</li>
+          <li>Título del vehículo original</li>
+          <li>Formulario 08 firmado</li>
+          <li>Libre deuda de patente</li>
+          <li>RTO vigente (si aplica)</li>
+        </ul>
+      </div>
+
+      <div class="price-row">
+        <span>💰 Costo del servicio</span>
+        <strong>Consultar →</strong>
+      </div>
+
+      <div class="detail-card" style="margin-bottom:0;">
+        <h3>⚡ ¿Por qué elegirnos?</h3>
+        <p style="margin-bottom:8px;">✦ Atención rápida y personalizada<br>✦ Asesoramiento en todo el proceso<br>✦ Sin filas ni demoras innecesarias<br>✦ Respuesta inmediata a tus consultas</p>
+      </div>
+
+      <div style="height:16px;"></div>
+
+      <div class="btn-group">
+        <button class="btn-primary blue" onclick="showScreen('s-solicitud')">📋 Solicitar trámite</button>
+        <button class="btn-wsp" onclick="whatsapp()">💬 Consultar por WhatsApp</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 6: FORMULARIO SOLICITUD ══ -->
+  <div id="s-solicitud" class="screen">
+    <div class="screen-header">
+      <span class="back" onclick="showScreen('s-detalle')">←</span>
+      <h1>Nueva solicitud</h1>
+      <p>Completá el formulario y te contactamos</p>
+    </div>
+    <div class="scroll-body">
+      <div class="form-body">
+        <div class="input-group">
+          <label>Nombre completo</label>
+          <div class="inp-icon">
+            <span class="icon">👤</span>
+            <input class="inp" type="text" placeholder="Tu nombre completo" />
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Teléfono de contacto</label>
+          <div class="inp-icon">
+            <span class="icon">📱</span>
+            <input class="inp" type="tel" placeholder="2964 XXXXXX" />
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Tipo de trámite</label>
+          <div class="inp-icon">
+            <span class="icon">📋</span>
+            <select class="inp">
+              <option>Transferencia vehicular</option>
+              <option>Informe de dominio</option>
+              <option>Cédula verde / azul</option>
+              <option>Patentamiento</option>
+              <option>Gestión contable</option>
+              <option>Gestión administrativa</option>
+              <option>Otro</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Mensaje / Consulta</label>
+          <textarea class="inp" rows="4" style="resize:none;padding-top:14px;" placeholder="Contanos brevemente qué necesitás..."></textarea>
+        </div>
+        <div class="success-banner" id="success-msg" style="display:none;">
+          <span>✅ ¡Solicitud enviada! Te contactaremos a la brevedad.</span>
+        </div>
+        <button class="btn-primary blue" onclick="sendForm()">🚀 Enviar solicitud</button>
+        <div style="text-align:center;margin-top:14px;color:var(--sub);font-size:12px;">
+          Respuesta inmediata en horario de atención
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 7: ESTADO TRÁMITE ══ -->
+  <div id="s-estado" class="screen">
+    <div class="screen-header">
+      <span class="back" onclick="showScreen('s-home')">←</span>
+      <h1>Mis trámites</h1>
+      <p>Seguí el estado en tiempo real</p>
+    </div>
+    <div class="scroll-body">
+      <div class="tramite-card">
+        <div class="tc-header">
+          <h3>Transferencia vehicular</h3>
+          <span>📅 Iniciado: 19/03/2026 · Ref #2024-001</span>
+        </div>
+        <div class="tc-body">
+          <ul class="status-steps">
+            <li class="done">
+              <div class="step-dot done">✓</div>
+              <div class="step-info">
+                <strong>Recibido</strong>
+                <span>19/03/2026 · 10:30 hs · Tu solicitud fue recibida</span>
+              </div>
+            </li>
+            <li class="done">
+              <div class="step-dot active">⏳</div>
+              <div class="step-info">
+                <strong>En proceso</strong>
+                <span>Actualmente gestionando documentación</span>
+              </div>
+            </li>
+            <li>
+              <div class="step-dot pending">○</div>
+              <div class="step-info">
+                <strong>Finalizado</strong>
+                <span>Pendiente · Tiempo est.: 3-5 días hábiles</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tramite-card">
+        <div class="tc-header" style="background:linear-gradient(135deg,#15803d,#22c55e);">
+          <h3>Informe de dominio</h3>
+          <span>📅 Finalizado: 15/03/2026 · Ref #2024-000</span>
+        </div>
+        <div class="tc-body">
+          <ul class="status-steps">
+            <li class="done">
+              <div class="step-dot done">✓</div>
+              <div class="step-info"><strong>Recibido</strong><span>15/03/2026</span></div>
+            </li>
+            <li class="done">
+              <div class="step-dot done">✓</div>
+              <div class="step-info"><strong>En proceso</strong><span>15/03/2026</span></div>
+            </li>
+            <li class="done">
+              <div class="step-dot done">✓</div>
+              <div class="step-info">
+                <strong>Finalizado ✅</strong>
+                <span>Trámite completado exitosamente</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="padding:0 20px 20px;">
+        <button class="btn-primary blue" onclick="showScreen('s-automotor')">+ Nuevo trámite</button>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="showScreen('s-home')"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></div>
+      <div class="nav-item" onclick="showScreen('s-automotor')"><span class="nav-icon">📋</span><span class="nav-label">Trámites</span></div>
+      <div class="nav-item active"><span class="nav-icon">📁</span><span class="nav-label">Estado</span></div>
+      <div class="nav-item" onclick="showScreen('s-contacto')"><span class="nav-icon">💬</span><span class="nav-label">Contacto</span></div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 8: CONTACTO ══ -->
+  <div id="s-contacto" class="screen">
+    <div class="screen-header">
+      <span class="back" onclick="showScreen('s-home')">←</span>
+      <h1>Contacto</h1>
+      <p>Atención rápida y personalizada</p>
+    </div>
+    <div class="scroll-body">
+      <div style="padding:16px 20px 8px;">
+        <button class="wsp-big" onclick="whatsapp()">
+          💬 Escribinos por WhatsApp
+        </button>
+      </div>
+
+      <div class="section-title">Teléfonos</div>
+      <div class="contact-card">
+        <div class="contact-item-row" onclick="window.location.href='tel:3518668892'">
+          <div class="ci-icon">📞</div>
+          <div class="ci-info"><strong>351 866 8892</strong><span>Llamar directamente</span></div>
+          <span class="ci-arrow">›</span>
+        </div>
+        <div class="contact-item-row" onclick="window.location.href='tel:2964612803'">
+          <div class="ci-icon">📞</div>
+          <div class="ci-info"><strong>2964 612803</strong><span>Llamar directamente</span></div>
+          <span class="ci-arrow">›</span>
+        </div>
+        <div class="contact-item-row" onclick="window.location.href='tel:02964559077'">
+          <div class="ci-icon">📞</div>
+          <div class="ci-info"><strong>(02964) 559077</strong><span>Llamar directamente</span></div>
+          <span class="ci-arrow">›</span>
+        </div>
+      </div>
+
+      <div class="section-title">Redes y email</div>
+      <div class="contact-card">
+        <div class="contact-item-row" onclick="window.location.href='mailto:marservicios46@gmail.com'">
+          <div class="ci-icon">✉️</div>
+          <div class="ci-info"><strong>marservicios46@gmail.com</strong><span>Enviar email</span></div>
+          <span class="ci-arrow">›</span>
+        </div>
+        <div class="contact-item-row" onclick="window.location.href='https://instagram.com/monica__gaby2024'">
+          <div class="ci-icon">📸</div>
+          <div class="ci-info"><strong>@monica__gaby2024</strong><span>Instagram</span></div>
+          <span class="ci-arrow">›</span>
+        </div>
+      </div>
+
+      <div style="padding: 8px 20px 20px;text-align:center;">
+        <div style="background:var(--sky);border-radius:14px;padding:14px 18px;">
+          <div style="font-size:20px;margin-bottom:6px;">⏰</div>
+          <strong style="font-size:13px;color:var(--text);">Horario de atención</strong>
+          <p style="font-size:12px;color:var(--sub);margin-top:4px;">Lunes a Viernes · 9:00 - 18:00 hs</p>
+          <p style="font-size:11px;color:var(--mid);font-weight:700;margin-top:4px;">Respuesta inmediata por WhatsApp</p>
+        </div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <div class="nav-item" onclick="showScreen('s-home')"><span class="nav-icon">🏠</span><span class="nav-label">Inicio</span></div>
+      <div class="nav-item" onclick="showScreen('s-automotor')"><span class="nav-icon">📋</span><span class="nav-label">Trámites</span></div>
+      <div class="nav-item" onclick="showScreen('s-estado')"><span class="nav-icon">📁</span><span class="nav-label">Estado</span></div>
+      <div class="nav-item active"><span class="nav-icon">💬</span><span class="nav-label">Contacto</span></div>
+    </div>
+  </div>
+
+</div><!-- /phone -->
+
+<script>
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+  const el = document.getElementById(id);
+  if (el) {
+    el.style.display = 'flex';
+    requestAnimationFrame(() => el.classList.add('active'));
+  }
+}
+
+function sendForm() {
+  const btn = event.currentTarget;
+  const inputs = document.querySelectorAll('#s-solicitud .inp');
+  const nombre   = inputs[0]?.value || '';
+  const telefono = inputs[1]?.value || '';
+  const tramite  = inputs[2]?.value || 'No especificado';
+  const mensaje  = inputs[3]?.value || 'Sin mensaje adicional';
+
+  if (!nombre || !telefono) {
+    alert('Por favor completá tu nombre y teléfono.');
+    return;
+  }
+
+  btn.textContent = '⏳ Enviando...';
+  btn.disabled = true;
+
+  const texto = '🗂️ *NUEVA SOLICITUD - GESTIÓN INTEGRAL G&I*\n\n'
+    + '👤 *Nombre:* ' + nombre + '\n'
+    + '📱 *Teléfono:* ' + telefono + '\n'
+    + '📋 *Trámite:* ' + tramite + '\n'
+    + '💬 *Mensaje:* ' + mensaje + '\n\n'
+    + '_Enviado desde la app_';
+
+  setTimeout(() => {
+    document.getElementById('success-msg').style.display = 'flex';
+    btn.textContent = '✅ Solicitud enviada';
+    btn.style.background = 'linear-gradient(135deg,#15803d,#22c55e)';
+    window.open('https://wa.me/5492964559077?text=' + encodeURIComponent(texto), '_blank');
+    setTimeout(() => showScreen('s-estado'), 2000);
+  }, 800);
+}
+
+function whatsapp() {
+  const msg = encodeURIComponent('Hola! Me comunico desde la app de GESTIÓN INTEGRAL G&I. Quisiera consultar sobre un trámite.');
+  window.open('https://wa.me/5492964559077?text=' + msg, '_blank');
+}
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js');
+  });
+}
+</script>
+</body>
+</html>
