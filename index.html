@@ -1,1 +1,305 @@
-<meta http-equiv="refresh" content="0; url=inicio.html">
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OficiosYA — Profesionales de confianza · Río Grande</title>
+  <meta name="description" content="Encontrá electricistas, plomeros, gasistas y más en Río Grande, Tierra del Fuego. Reseñas reales de vecinos." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ LOADER ═══ -->
+<div id="loader">
+  <div class="loader-brand">Oficios<span>YA</span></div>
+  <div class="spinner"></div>
+</div>
+
+<!-- ═══════════════════════════════════════ ALERTS ═══ -->
+<div id="alert-container"></div>
+
+<!-- ═══════════════════════════════════════ NAVBAR ═══ -->
+<nav class="navbar">
+  <div class="navbar-brand" onclick="scrollTo({top:0,behavior:'smooth'})">
+    <div class="logo-icon">🔧</div>
+    <span>Oficios<span class="brand-ya">YA</span></span>
+  </div>
+  <div class="nav-right">
+    <!-- Guest -->
+    <div id="nav-guest" class="hidden">
+      <button class="btn btn-ghost btn-sm" onclick="openModal('m-auth')">Iniciar sesión</button>
+      <button class="btn btn-primary btn-sm" onclick="openModal('m-auth')">Registrarse</button>
+    </div>
+    <!-- Logged in -->
+    <div id="nav-user" class="nav-user hidden">
+      <span id="nav-admin-badge" class="nav-admin-badge hidden">ADMIN</span>
+      <span id="nav-email"></span>
+      <div id="nav-avatar" class="nav-avatar"></div>
+      <button class="btn btn-ghost btn-sm" onclick="App.logout()">Salir</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════ HERO ════ -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">📍 Río Grande, Tierra del Fuego</div>
+    <h1>El profesional que<br>necesitás, <em>hoy mismo</em></h1>
+    <p>Electricistas, plomeros, gasistas y más —<br>con reseñas reales de tus vecinos.</p>
+    <div class="hero-search">
+      <span style="padding-left:8px;font-size:18px;color:var(--gris-400)">🔍</span>
+      <input type="text" id="busqueda" placeholder="Buscá por nombre o servicio…" oninput="App.buscar(this.value)" autocomplete="off" />
+      <button class="btn btn-primary" onclick="App.buscar(document.getElementById('busqueda').value)">Buscar</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="num" id="stat-profs">—</span><span class="lbl">Profesionales</span></div>
+      <div class="hero-stat"><span class="num" id="stat-vistas">—</span><span class="lbl">Visitas al perfil</span></div>
+      <div class="hero-stat"><span class="num"><span style="color:var(--rojo)">★</span> <span id="stat-rating">—</span></span><span class="lbl">Calificación media</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════ FILTROS + TOOLBAR ═══ -->
+<div class="filtros-band">
+  <div class="filtros-band-inner">
+    <div class="filtros-scroll" id="filtros-chips">
+      <button class="filtro-chip activo" onclick="App.filtrar(this,'todos')">⚡ Todos</button>
+      <button class="filtro-chip" onclick="App.filtrar(this,'Electricista')">💡 Electricista</button>
+      <button class="filtro-chip" onclick="App.filtrar(this,'Plomero')">🔩 Plomero</button>
+      <button class="filtro-chip" onclick="App.filtrar(this,'Gasista')">🔥 Gasista</button>
+      <button class="filtro-chip" onclick="App.filtrar(this,'Carpintero')">🪵 Carpintero</button>
+      <button class="filtro-chip" onclick="App.filtrar(this,'Pintor')">🎨 Pintor</button>
+      <button class="filtro-chip" onclick="App.filtrar(this,'Cerrajero')">🔑 Cerrajero</button>
+      <button class="filtro-chip" onclick="App.filtrar(this,'Técnico')">📱 Técnico</button>
+      <button class="filtro-chip" onclick="App.filtrar(this,'Albañil')">🧱 Albañil</button>
+      <button class="filtro-chip" onclick="App.filtrar(this,'Jardinero')">🌿 Jardinero</button>
+    </div>
+  </div>
+</div>
+
+<div class="toolbar">
+  <div class="toolbar-title">Profesionales <span id="ctr"></span></div>
+  <div class="toolbar-actions">
+    <select class="input-field" style="width:auto;padding:8px 12px;font-size:13px;" onchange="App.ordenar(this.value)">
+      <option value="rating">Mejor calificación</option>
+      <option value="vistas">Más vistas</option>
+      <option value="nombre">Nombre A-Z</option>
+      <option value="reciente">Más recientes</option>
+    </select>
+    <button id="btn-registrar-prof" class="btn btn-primary btn-sm hidden" onclick="openModal('m-registrar-prof')">
+      + Publicar perfil
+    </button>
+    <button id="btn-admin" class="btn btn-negro btn-sm hidden" onclick="openModal('m-admin')">
+      ⚙️ Admin
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════ GRID ════ -->
+<div class="profesionales-grid" id="grid"></div>
+
+<!-- ══════════════════════════════════════ FOOTER ════ -->
+<footer>
+  <strong>OficiosYA</strong> — Río Grande, Tierra del Fuego &nbsp;·&nbsp;
+  <a href="#" onclick="openModal('m-auth');return false;">¿Sos profesional? Publicá tu perfil</a>
+  &nbsp;·&nbsp; © 2025
+</footer>
+
+<!-- ══════════════════════════ MODAL: AUTH ═══════════ -->
+<div class="modal-overlay" id="m-auth" onclick="closeModalOutside(event,'m-auth')">
+  <div class="modal">
+    <div class="auth-tabs">
+      <button class="auth-tab activo" id="tab-login" onclick="switchAuthTab('login')">Iniciar sesión</button>
+      <button class="auth-tab"        id="tab-register" onclick="switchAuthTab('register')">Registrarse</button>
+    </div>
+    <!-- Login -->
+    <div class="auth-form" id="auth-login-form">
+      <div class="input-group">
+        <label class="input-label">Email</label>
+        <input type="email" class="input-field" id="login-email" placeholder="tu@email.com" autocomplete="email" />
+      </div>
+      <div class="input-group">
+        <label class="input-label">Contraseña</label>
+        <input type="password" class="input-field" id="login-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')App.login()" />
+      </div>
+      <button class="btn btn-primary btn-lg w-full" onclick="App.login()" id="btn-login">Ingresar →</button>
+      <div class="auth-divider">¿No tenés cuenta? <a href="#" onclick="switchAuthTab('register');return false;" style="color:var(--rojo)">Registrate</a></div>
+    </div>
+    <!-- Register -->
+    <div class="auth-form hidden" id="auth-register-form">
+      <div class="input-group">
+        <label class="input-label">Email</label>
+        <input type="email" class="input-field" id="reg-email" placeholder="tu@email.com" autocomplete="email" />
+      </div>
+      <div class="input-group">
+        <label class="input-label">Contraseña</label>
+        <input type="password" class="input-field" id="reg-pass" placeholder="Mínimo 6 caracteres" autocomplete="new-password" />
+      </div>
+      <div class="input-group">
+        <label class="input-label">Confirmar contraseña</label>
+        <input type="password" class="input-field" id="reg-pass2" placeholder="Repetí tu contraseña" autocomplete="new-password" onkeydown="if(event.key==='Enter')App.register()" />
+      </div>
+      <button class="btn btn-primary btn-lg w-full" onclick="App.register()" id="btn-register">Crear cuenta →</button>
+      <div class="auth-divider">¿Ya tenés cuenta? <a href="#" onclick="switchAuthTab('login');return false;" style="color:var(--rojo)">Iniciá sesión</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ MODAL: PERFIL PROFESIONAL ════ -->
+<div class="modal-overlay" id="m-perfil" onclick="closeModalOutside(event,'m-perfil')">
+  <div class="modal">
+    <div class="modal-header-dark">
+      <button class="modal-close" onclick="closeModal('m-perfil')">✕</button>
+      <div class="modal-avatar-wrap">
+        <div class="modal-avatar" id="mp-av"></div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-nombre" id="mp-nombre"></div>
+      <div class="modal-meta-row">
+        <span class="badge badge-rojo" id="mp-oficio"></span>
+        <span class="badge badge-gris" id="mp-ubicacion"></span>
+      </div>
+      <!-- Vistas -->
+      <div class="views-panel">
+        <div>
+          <div class="views-num" id="mp-vistas">0</div>
+          <div class="views-lbl">vistas del perfil</div>
+        </div>
+        <div style="color:rgba(255,255,255,.25);font-size:28px;">👁</div>
+      </div>
+      <!-- Rating -->
+      <div class="rating-panel">
+        <div class="rating-big" id="mp-rating-num">—</div>
+        <div>
+          <div id="mp-stars" style="font-size:18px;"></div>
+          <div class="rating-detail" id="mp-rating-detail"></div>
+        </div>
+      </div>
+      <!-- Info -->
+      <div class="info-grid">
+        <div class="info-item"><div class="lbl">Teléfono</div><div class="val" id="mp-tel"></div></div>
+        <div class="info-item"><div class="lbl">Ubicación</div><div class="val" id="mp-ubi"></div></div>
+      </div>
+      <p style="font-size:14px;color:var(--gris-600);line-height:1.65;margin-bottom:18px;" id="mp-desc"></p>
+      <!-- Acciones -->
+      <div class="modal-actions">
+        <a class="btn btn-wa btn-lg" id="mp-wa" target="_blank" rel="noopener">💬 WhatsApp</a>
+        <button class="btn btn-gris btn-lg" id="mp-eliminar" onclick="App.eliminarProfesional()">🗑 Eliminar</button>
+      </div>
+      <!-- Comentarios -->
+      <div class="section-title">⭐ Calificaciones y comentarios</div>
+      <div class="comentarios-lista" id="mp-comentarios"></div>
+      <!-- Form comentario -->
+      <div class="form-comentario" id="form-comentario-wrap">
+        <div class="form-comentario-title">✍️ Dejá tu calificación</div>
+        <div class="stars-input" id="stars-input">
+          <span class="star-interactive star-off" data-val="1" onclick="App.selStar(1)">★</span>
+          <span class="star-interactive star-off" data-val="2" onclick="App.selStar(2)">★</span>
+          <span class="star-interactive star-off" data-val="3" onclick="App.selStar(3)">★</span>
+          <span class="star-interactive star-off" data-val="4" onclick="App.selStar(4)">★</span>
+          <span class="star-interactive star-off" data-val="5" onclick="App.selStar(5)">★</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <textarea class="input-field" id="comentario-txt" placeholder="Contanos tu experiencia con este profesional…" style="min-height:70px;"></textarea>
+          <button class="btn btn-primary" onclick="App.enviarComentario()">Publicar comentario</button>
+        </div>
+      </div>
+      <div id="form-login-cta" class="hidden" style="background:var(--gris-100);border-radius:var(--r-sm);padding:14px;text-align:center;font-size:14px;color:var(--gris-600);">
+        <a href="#" onclick="closeModal('m-perfil');openModal('m-auth');return false;" style="color:var(--rojo);font-weight:600;">Iniciá sesión</a> para dejar una calificación
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ MODAL: REGISTRAR PROFESIONAL ══ -->
+<div class="modal-overlay" id="m-registrar-prof" onclick="closeModalOutside(event,'m-registrar-prof')">
+  <div class="modal">
+    <div style="padding:28px 28px 0;display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div class="modal-form-title">🔧 Publicá tu perfil</div>
+        <div class="modal-form-sub">Completá tus datos para aparecer en el directorio.</div>
+      </div>
+      <button class="modal-close" style="position:relative;top:0;right:0;background:var(--gris-100);color:var(--gris-700);" onclick="closeModal('m-registrar-prof')">✕</button>
+    </div>
+    <div style="padding:0 28px 28px;">
+      <div class="form-grid">
+        <div class="input-group form-full">
+          <label class="input-label">Nombre completo *</label>
+          <input type="text" class="input-field" id="rp-nombre" placeholder="Juan Rodríguez" maxlength="80" />
+        </div>
+        <div class="input-group">
+          <label class="input-label">Oficio *</label>
+          <select class="input-field" id="rp-oficio">
+            <option value="">Seleccioná…</option>
+            <option>Electricista</option>
+            <option>Plomero</option>
+            <option>Gasista</option>
+            <option>Carpintero</option>
+            <option>Pintor</option>
+            <option>Cerrajero</option>
+            <option>Técnico</option>
+            <option>Albañil</option>
+            <option>Jardinero</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label class="input-label">Teléfono / WhatsApp *</label>
+          <input type="tel" class="input-field" id="rp-tel" placeholder="2964 xxxxxxx" maxlength="20" />
+        </div>
+        <div class="input-group form-full">
+          <label class="input-label">Ubicación *</label>
+          <input type="text" class="input-field" id="rp-ubicacion" placeholder="Ej: Centro, Chacra 2…" maxlength="80" />
+        </div>
+        <div class="input-group form-full">
+          <label class="input-label">Descripción *</label>
+          <textarea class="input-field" id="rp-desc" placeholder="Contá qué servicios ofrecés, años de experiencia, horarios…" maxlength="400"></textarea>
+          <div class="input-hint">Máximo 400 caracteres</div>
+        </div>
+        <div class="form-full">
+          <button class="btn btn-primary btn-lg w-full" id="btn-guardar-prof" onclick="App.registrarProfesional()">
+            🚀 Publicar perfil
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════ MODAL: ADMIN ══════════ -->
+<div class="modal-overlay" id="m-admin" onclick="closeModalOutside(event,'m-admin')">
+  <div class="modal modal-wide">
+    <div class="admin-header">
+      <button class="modal-close" onclick="closeModal('m-admin')">✕</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div class="admin-titulo">⚙️ Panel de Administración</div>
+          <div class="admin-sub">OficiosYA · Río Grande, Tierra del Fuego</div>
+        </div>
+        <span class="admin-badge">ADMIN</span>
+      </div>
+    </div>
+    <div class="admin-body">
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card stat-rojo"><span class="val" id="adm-profs">—</span><span class="lbl">Profesionales</span></div>
+        <div class="stat-card stat-dorado"><span class="val" id="adm-rating">—</span><span class="lbl">Rating promedio</span></div>
+        <div class="stat-card stat-verde"><span class="val" id="adm-vistas">—</span><span class="lbl">Vistas totales</span></div>
+      </div>
+      <!-- Tabs -->
+      <div class="admin-tabs">
+        <button class="admin-tab activo" onclick="adminTab(this,'adm-profs-tab')">👤 Profesionales</button>
+        <button class="admin-tab"        onclick="adminTab(this,'adm-stats-tab')">📊 Estadísticas</button>
+      </div>
+      <div id="adm-profs-tab"></div>
+      <div id="adm-stats-tab" class="hidden"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
